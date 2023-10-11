@@ -1,0 +1,267 @@
+
+<!-- Updated after class with the fix. The problem was
+var dist = alpha * Math.PI*RADIUS ;
+Instead of 
+var dist = alpha * RADIUS ;
+
+Because PI also simplifies here:
+2*PI angle  ... 2*PI*R length
+alpha angle ... ? length (our dist)
+-->
+<html>
+	<head>
+	
+		<title>LAMAD Earth</title>
+		
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<style>
+			body {
+				margin: 0px;
+			}
+			#distances {
+				position: absolute;
+				top: 0px;
+			}
+		</style>
+		
+		<script src="three.js-dev/three.js"></script>
+		<script src="three.js-dev/TrackballControls.js"></script>
+		<script src="three.js-dev/Detector.js"></script>
+		
+		<script>
+			var g_camera, g_controls, 
+				g_scene, g_renderer,
+				g_earth;
+				
+			var RADIUS=6371; // Km
+
+			var TUUSNIEMI = {
+				lat:62.81,
+				lng:28.49
+			}
+			var DUBAI = {
+				lat:25.20,
+				lng:55.43
+			}
+			
+			if (!Detector.webgl){
+				Detector.addGetWebGLMessage();
+			}
+											
+			function main() {
+				setupScene();
+				setupCamera();
+				setupControls(g_camera); 
+				setupRenderer();
+									
+				drawAxes(scaleValue(RADIUS));
+				
+				var loader = new THREE.TextureLoader();
+				//loader.load('./images/pumpkin.png',function(texture){
+				//loader.load('./images/Equirectangular-tissot.png',function(texture){
+				// loader.load('./images/Equirectangular-projection.jpg',function(texture){
+				// 	// I can use the texture object
+				// 	drawSphere({x:0,y:0,z:0},scaleValue(RADIUS),"white", texture);
+				// });
+				
+				// var tuus=WGStoXYZ(TUUSNIEMI, RADIUS);
+				// drawSphere(scalePoint(tuus),3,"red");
+				
+				// var dub=WGStoXYZ(DUBAI, RADIUS);
+				// drawSphere(scalePoint(dub),3,"blue");
+				
+				
+				// document.getElementById("distances").innerHTML=
+				// 	"Euclidean: "+Math.floor(euclidean(tuus,dub))+" km<br>"+
+				// 	"Haversine: "+Math.floor(haversine(TUUSNIEMI,DUBAI))+" km";
+				
+				startAnimation();
+				window.addEventListener('resize', onWindowResize, false);
+			}
+			
+			//********** DURING LECTURE **********//
+			
+			// function euclidean(p1,p2){
+			// 	return Math.sqrt(
+			// 		(p1.x-p2.x)*(p1.x-p2.x)+
+			// 		Math.pow((p1.y-p2.y),2)+
+			// 		(p1.z-p2.z)*(p1.z-p2.z)
+			// 	);
+			// }
+			
+			// // TODO - fix....
+			// function haversine(wgs1,wgs2){
+			// 	var p1=WGStoXYZ(wgs1,RADIUS);
+			// 	var p2=WGStoXYZ(wgs2,RADIUS);
+			// 	var e = euclidean(p1,p2);
+			// 	var alpha = 2*Math.asin((e/2)/RADIUS);
+			// 	// var dist = alpha * Math.PI*RADIUS ;
+			// 	// FIX was that PI simplifies in the equation
+			// 	// 2*PI angle  ... 2*PI*R length
+			// 	// alpha angle ... x length
+				
+			// 	var dist = alpha * RADIUS ;
+			// 	return dist;
+			// }
+			
+			// function WGStoXYZ(location, R){
+			// 	var xyz={x:0,y:0,z:0};
+				
+			// 	xyz["y"]=Math.sin(degToRad(location.lat))*R;
+			// 	var r = Math.cos(degToRad(location.lat))*R;
+			// 	xyz["x"]=Math.sin(degToRad(location.lng))*r;
+			// 	xyz["z"]=Math.cos(degToRad(location.lng))*r;
+				
+			// 	return xyz;
+			// }
+			
+			// function degToRad(deg){
+			// 	return Math.PI*deg /180;
+			// }
+			
+			// function drawSphere(location, radius, color, texture){
+			// 	var segments=64;
+				
+			// 	var geometry=new THREE.SphereGeometry(
+			// 			radius,segments,segments);
+						
+			// 	var material=new THREE.MeshPhongMaterial({
+			// 		color:color,
+			// 		map:texture
+			// 	});
+				
+			// 	var sphere= new THREE.Mesh(geometry,material);
+			// 	sphere.position.setX(location.x);
+			// 	sphere.position.setY(location.y);
+			// 	sphere.position.setZ(location.z);
+			// 	sphere.rotation.y=-Math.PI/2;
+				
+			// 	g_scene.add(sphere);
+				
+			// 	render();
+			// }	
+			
+			//************************************//
+			
+			// Helper Functions
+			
+			function scaleValue(size){
+				var newSize=size*100/RADIUS;
+				return newSize;
+			}
+			
+			function scalePoint(point){
+				var newPoint={x:0,y:0,z:0};
+				
+				newPoint["x"]=scaleValue(point["x"]);
+				newPoint["y"]=scaleValue(point["y"]);
+				newPoint["z"]=scaleValue(point["z"]);
+			
+				return newPoint;
+			}			
+			
+			// Drawing Functions
+				
+			function drawAxes(length){
+				var material = new THREE.LineBasicMaterial( { color: 0xff0000 } );
+				var geometry = new THREE.Geometry();
+				
+				geometry.vertices.push(new THREE.Vector3( 0, 0, 0) );
+				geometry.vertices.push(new THREE.Vector3( length, 0, 0) );
+				var line = new THREE.Line( geometry, material );
+				g_scene.add(line);
+				
+				//
+				
+				material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+				geometry = new THREE.Geometry();
+				geometry.vertices.push(new THREE.Vector3( 0, 0, 0) );
+				geometry.vertices.push(new THREE.Vector3( 0, length, 0) );
+				line = new THREE.Line( geometry, material );
+				g_scene.add(line);
+				
+				//
+				
+				material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+				geometry = new THREE.Geometry();
+				geometry.vertices.push(new THREE.Vector3( 0, 0, 0) );
+				geometry.vertices.push(new THREE.Vector3( 0, 0, length) );
+				line = new THREE.Line( geometry, material );
+				g_scene.add(line);
+				
+				render();
+			}
+			
+			
+			// Setup Environment and Controlls
+			
+			function setupScene(){
+				g_scene = new THREE.Scene();
+				g_scene.background = new THREE.Color(0xffffff);
+				var ambient = new THREE.AmbientLight(0xffffff);
+				g_scene.add(ambient);
+			}
+
+			function setupCamera(){
+				g_camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+				g_camera.position.z = 300;
+			}
+			
+			function setupControls(camera){
+				g_controls = new THREE.TrackballControls(camera);
+
+				g_controls.rotateSpeed = 1.0;
+				g_controls.zoomSpeed = 1.2;
+				g_controls.panSpeed = 0.8;
+				g_controls.noZoom = false;
+				g_controls.noPan = false;
+				g_controls.staticMoving = true;
+				g_controls.dynamicDampingFactor = 0.3;
+
+				g_controls.addEventListener('change', render);
+			}
+			
+			function setupRenderer(){
+				g_renderer = new THREE.WebGLRenderer({
+					antialias: false
+				});
+				
+				g_renderer.setPixelRatio(window.devicePixelRatio);
+				g_renderer.setSize(window.innerWidth, window.innerHeight);
+				
+				var div = document.getElementById('content');
+				div.appendChild(g_renderer.domElement);
+			}
+			
+			function startAnimation() {
+				requestAnimationFrame(startAnimation);
+				g_controls.update();
+			}
+
+			function render() {
+				g_renderer.render(g_scene, g_camera);
+			}
+			
+			function onWindowResize() {
+				g_camera.aspect = window.innerWidth / window.innerHeight;
+				g_camera.updateProjectionMatrix();
+
+				g_renderer.setSize(window.innerWidth, window.innerHeight);
+				g_controls.handleResize();
+
+				render();
+			}
+
+		</script>
+		
+	</head>
+
+	<body onload="main()">
+	
+		<div id="content" ></div>
+		<div id="distances"></div>
+	</body>
+
+</html>
