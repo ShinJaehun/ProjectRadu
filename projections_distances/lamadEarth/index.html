@@ -45,6 +45,10 @@ alpha angle ... ? length (our dist)
 				lat:25.20,
 				lng:55.43
 			}
+            var JEJU = {
+                lat: 33.27,
+                lng: 126.79
+            }
 			
 			if (!Detector.webgl){
 				Detector.addGetWebGLMessage();
@@ -58,24 +62,28 @@ alpha angle ... ? length (our dist)
 									
 				drawAxes(scaleValue(RADIUS));
 				
+                // drawSphere({x: 0, y: 0, z: 0}, scaleValue(RADIUS), "gray")
+
 				var loader = new THREE.TextureLoader();
-				//loader.load('./images/pumpkin.png',function(texture){
-				//loader.load('./images/Equirectangular-tissot.png',function(texture){
-				// loader.load('./images/Equirectangular-projection.jpg',function(texture){
-				// 	// I can use the texture object
-				// 	drawSphere({x:0,y:0,z:0},scaleValue(RADIUS),"white", texture);
-				// });
+				// loader.load('./images/pumpkin.png',function(texture){
+				// loader.load('./images/Equirectangular-tissot.png',function(texture){
+				loader.load('./images/Equirectangular-projection.jpg',function(texture){
+					// I can use the texture object
+					drawSphere({x:0,y:0,z:0},scaleValue(RADIUS),"white", texture);
+				});
 				
-				// var tuus=WGStoXYZ(TUUSNIEMI, RADIUS);
-				// drawSphere(scalePoint(tuus),3,"red");
+				var tuus=WGStoXYZ(TUUSNIEMI, RADIUS);
+				drawSphere(scalePoint(tuus),3,"red");
 				
-				// var dub=WGStoXYZ(DUBAI, RADIUS);
-				// drawSphere(scalePoint(dub),3,"blue");
+				var dub=WGStoXYZ(DUBAI, RADIUS);
+				drawSphere(scalePoint(dub),3,"blue");
 				
-				
-				// document.getElementById("distances").innerHTML=
-				// 	"Euclidean: "+Math.floor(euclidean(tuus,dub))+" km<br>"+
-				// 	"Haversine: "+Math.floor(haversine(TUUSNIEMI,DUBAI))+" km";
+                var jeju=WGStoXYZ(JEJU, RADIUS);
+				drawSphere(scalePoint(jeju),3,"green");
+
+				document.getElementById("distances").innerHTML=
+					"Euclidean: "+Math.floor(euclidean(tuus,dub))+" km<br>"+
+					"Haversine: "+Math.floor(haversine(TUUSNIEMI,DUBAI))+" km";
 				
 				startAnimation();
 				window.addEventListener('resize', onWindowResize, false);
@@ -83,65 +91,65 @@ alpha angle ... ? length (our dist)
 			
 			//********** DURING LECTURE **********//
 			
-			// function euclidean(p1,p2){
-			// 	return Math.sqrt(
-			// 		(p1.x-p2.x)*(p1.x-p2.x)+
-			// 		Math.pow((p1.y-p2.y),2)+
-			// 		(p1.z-p2.z)*(p1.z-p2.z)
-			// 	);
-			// }
+			function euclidean(p1,p2){
+				return Math.sqrt(
+					(p1.x-p2.x)*(p1.x-p2.x)+
+					Math.pow((p1.y-p2.y),2)+
+					(p1.z-p2.z)*(p1.z-p2.z)
+				);
+			}
 			
-			// // TODO - fix....
-			// function haversine(wgs1,wgs2){
-			// 	var p1=WGStoXYZ(wgs1,RADIUS);
-			// 	var p2=WGStoXYZ(wgs2,RADIUS);
-			// 	var e = euclidean(p1,p2);
-			// 	var alpha = 2*Math.asin((e/2)/RADIUS);
-			// 	// var dist = alpha * Math.PI*RADIUS ;
-			// 	// FIX was that PI simplifies in the equation
-			// 	// 2*PI angle  ... 2*PI*R length
-			// 	// alpha angle ... x length
+			// TODO - fix....
+			function haversine(wgs1,wgs2){
+				var p1=WGStoXYZ(wgs1,RADIUS);
+				var p2=WGStoXYZ(wgs2,RADIUS);
+				var e = euclidean(p1,p2);
+				var alpha = 2*Math.asin((e/2)/RADIUS);
+				var dist = alpha * Math.PI*RADIUS ;
+				// FIX was that PI simplifies in the equation
+				// 2*PI angle  ... 2*PI*R length
+				// alpha angle ... x length
 				
-			// 	var dist = alpha * RADIUS ;
-			// 	return dist;
-			// }
+				// var dist = alpha * RADIUS ;
+				return dist;
+			}
 			
-			// function WGStoXYZ(location, R){
-			// 	var xyz={x:0,y:0,z:0};
+			function WGStoXYZ(location, R){
+				var xyz={x:0,y:0,z:0};
 				
-			// 	xyz["y"]=Math.sin(degToRad(location.lat))*R;
-			// 	var r = Math.cos(degToRad(location.lat))*R;
-			// 	xyz["x"]=Math.sin(degToRad(location.lng))*r;
-			// 	xyz["z"]=Math.cos(degToRad(location.lng))*r;
+				xyz["y"]=Math.sin(degToRad(location.lat))*R;
+				var r = Math.cos(degToRad(location.lat))*R;
+				xyz["x"]=Math.sin(degToRad(location.lng))*r;
+				xyz["z"]=Math.cos(degToRad(location.lng))*r;
 				
-			// 	return xyz;
-			// }
+				return xyz;
+			}
 			
-			// function degToRad(deg){
-			// 	return Math.PI*deg /180;
-			// }
+			function degToRad(deg){
+				return Math.PI*deg /180;
+			}
 			
-			// function drawSphere(location, radius, color, texture){
-			// 	var segments=64;
+			function drawSphere(location, radius, color, texture){
+				var segments=64;
 				
-			// 	var geometry=new THREE.SphereGeometry(
-			// 			radius,segments,segments);
+				var geometry=new THREE.SphereGeometry(
+						radius,segments,segments);
 						
-			// 	var material=new THREE.MeshPhongMaterial({
-			// 		color:color,
-			// 		map:texture
-			// 	});
+				var material=new THREE.MeshPhongMaterial({
+					color:color,
+					map:texture
+				});
 				
-			// 	var sphere= new THREE.Mesh(geometry,material);
-			// 	sphere.position.setX(location.x);
-			// 	sphere.position.setY(location.y);
-			// 	sphere.position.setZ(location.z);
-			// 	sphere.rotation.y=-Math.PI/2;
+				var sphere= new THREE.Mesh(geometry,material);
+				sphere.position.setX(location.x);
+				sphere.position.setY(location.y);
+				sphere.position.setZ(location.z);
+				sphere.rotation.y=-Math.PI/2; // 이게 있어야 경도 longitude를 0으로 초기화할 수 있음!
 				
-			// 	g_scene.add(sphere);
+				g_scene.add(sphere);
 				
-			// 	render();
-			// }	
+				render();
+			}	
 			
 			//************************************//
 			
