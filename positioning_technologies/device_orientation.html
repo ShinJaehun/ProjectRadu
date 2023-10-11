@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orientation</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+        #betterOutput {
+            background: lightgray;
+        }
+    </style>
+    <script>
+        window.addEventListener('deviceorientation', handleOrientation)
+        function handleOrientation(event) {
+            // var div = document.getElementById("output")
+            // printOutput(event, div)
+            var canvas = document.getElementById("betterOutput")
+            canvas.width=window.innerWidth
+            canvas.height = window.innerHeight
+            printBetterOutput(event, canvas)
+        }
+        function printOutput(event, div){
+            var outputString = ""
+            for(var property in event){
+                outputString += property+": "+event[property]+"<br/>"
+            }
+            div.innerHTML=outputString
+        }
+        function printBetterOutput(event, canvas){
+            var context = canvas.getContext("2d")
+            var location0 = {x: canvas.width/2, y: canvas.height/2}
+            var location = {x: location0.x, y: location0.y + event["beta"]}
+            var radius = Math.min(canvas.height, canvas.width) / 10
+            drawDisc(context, location, radius)
+        }
+        function drawDisc(context, location, radius) {
+            context.beginPath()
+            context.arc(location.x, location.y, radius, 0, 2 * Math.PI)
+            context.stroke()
+        }
+    </script>
+</head>
+<body>
+    <!--
+    <div id="output"></div>
+    -->
+    <canvas id="betterOutput"></canvas>
+</body>
+</html>

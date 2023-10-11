@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation</title>
+    <script>
+        var geolocation=null
+        if(window.navigator && window.navigator.geolocation) {
+            geolocation = window.navigator.geolocation
+        }
+        if(geolocation){
+            geolocation.getCurrentPosition(onLocationUpdate)
+        }
+
+        function onLocationUpdate(event) {
+            // console.log(event)
+            var stringOutput = ""
+            var coords = event["coords"]
+            for (var attr in coords) {
+                stringOutput += attr+": "+coords[attr]+"<br>"
+            }
+            document.getElementById('output').innerHTML=stringOutput
+
+        }
+    </script>
+</head>
+<body>
+    <div id="output"></div>
+</body>
+</html>
