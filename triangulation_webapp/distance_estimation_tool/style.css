@@ -1,0 +1,43 @@
+body{
+    margin:0;
+    overflow:hidden;
+    background:#222;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+#mySlider{
+    appearance:none;
+    width:90%;
+    height:35px;
+    background:#47f;
+    margin-top:35px;
+}
+#mySlider::-webkit-slider-thumb{
+    appearance:none;
+    width:35px;
+    height:35px;
+    background:white;
+}
+
+canvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+button{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    padding:5px;
+    font-weight:bold;
+    font-size:25px;
+}
+
+#myLabel{
+    font-size:25px;
+}
