@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Free Router</title>
+    <style>
+        #map {
+            height: 100%;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script src="js/httpHandler.js"></script>
+    <script>
+        var map;
+        var markers=[];
+        // var polyline;
+        var polylines=[];
+        // var polylinePath=[];
+        var WIND=null;
+        var LETTERS = ["A", "B", "C", "D", "E", "F"]
+
+        const GOOGLE_KEY=""
+        const WEATHER_KEY=""
+        const WEATHER_SERVER="https://api.openweathermap.org/data/2.5/weather"
+        const MOPSI_SERVER="http://cs.uef.fi/mopsi/routes/server.php" // 당연히 CORS 문제가 발생하겠지??
+        // const CONTEXT_SERVER="http://cs.uef.fi/~radum/lamad/demos/noWind/php/server.php"
+        // 안타까운데... context server가 작동하지 않는 상태인 것으로 보임
+
+        var CENTER = {
+            lat: 62.60,
+            lng: 29.76
+        }
+
+        var NOLJAKKA = {
+            lat: 62.62,
+            lng: 29.71
+        }
+
+        // function main() {
+        //     initMap()
+        // }
+
+        // 뭐 이런 식으로 script src를 지정하려고 했는데 뭐가 잘 안되네..
+        // url="https://maps.googleapis.com/maps/api/js?key=" + GOOGLE_KEY + "?callback=initMap" 
+        // document.getElementById(s)
+
+        // url="https://maps.googleapis.com/maps/api/js?key=" + GOOGLE_KEY + "?callback=initMap" 
+        // console.log(url)
+        // document.write("<script async src="+ url + "><\/script>")
+
+        function initMap() {
+            // api document에는 이렇게 쓰라고 했는디...
+            // const { Map } = await google.maps.importLibrary("maps");
+            // const { AdvancedMarkerView } = await google.maps.importLibrary("marker");
+            
+            // map = new Map(document.getElementById('map'), {
+            //     center: JOENSUU,
+            //     zoom: 12
+            // })
+
+            // // The marker, positioned at Uluru
+            // const marker = new AdvancedMarkerView({
+            //     map: map,
+            //     position: JOENSUU,
+            //     title: "JOENSUU",
+            // });  
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: CENTER,
+                zoom: 15
+            })
+
+            // const image = { // 수퍼맨 이미지
+            //     // url: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+            //     url: 'images/sup.png',
+            //     // This marker is 20 pixels wide by 32 pixels high.
+            //     scaledSize: new google.maps.Size(40, 20),
+            //     size: new google.maps.Size(40, 20),
+            //     // The origin for this image is (0, 0).
+            //     origin: new google.maps.Point(0, 0),
+            //     // The anchor for this image is the base of the flagpole at (0, 32).
+            //     anchor: new google.maps.Point(20, 10),
+            // };
+
+            // markers.push(addMarker(CENTER, "A"))
+            // markers.push(addMarker(NOLJAKKA, "B"))
+
+            google.maps.event.addListener(map, 'click', function(event){
+                //클릭할 때마다 마커 생성
+                addMarker(event.latLng)
+            })
+
+            addMarker(CENTER)
+            addMarker(NOLJAKKA)
+
+            // polyline = new google.maps.Polyline({
+            //     path: [],
+            //     // geodesic: true, // 슈퍼맨이 직선이 아니고 막 바운스하는데... 이 것 때문이래
+            //     strokeColor: "#0000FF",
+            //     strokeOpacity: 1,
+            //     strokeWeight: 2,
+            //     map: map,
+            // });
+
+            // flightPath.setMap(map);
+            
+            // setInterval(function(){
+            //     var latLng=marker.getPosition();
+            //     //latLng.lng+=0.01; 
+            //     // 이래서 google map이 디버깅하기 힘든거야...
+            //     // var newLatLng = new google.maps.LatLng(latLng.lat(), latLng.lng()+10) // 직선으로 날아가기
+
+            //     const verticalDirectionScaler=0.1;
+            //     const movementSpeed=10;
+                
+                
+            //     var windDeltaY=0;
+            //     var windDeltaX=0;
+            //     var multiplier=0.001;
+            //     if(wind!=null){
+            //         windDeltaY=Math.sin(degToRad(wind.deg+90))*wind.speed*multiplier;
+            //         windDeltaX=Math.cos(degToRad(wind.deg+90))*wind.speed*multiplier;
+            //     }
+                
+                
+            //     var newLatLng = new google.maps.LatLng(
+            //         latLng.lat()+(Math.random()-0.5)*verticalDirectionScaler+windDeltaY,
+            //         latLng.lng()+movementSpeed+windDeltaX);
+                    
+            //     polylinePath.push({
+            //                     lat: newLatLng.lat(), 
+            //                     lng: newLatLng.lng()
+            //                     });
+            //     flightPath.setPath(polylinePath);
+                
+            //     marker.setPosition(newLatLng);
+            // },100);
+
+            // getWeatherInCity("Joensuu")
+            getWeatherAtLocation(CENTER)
+
+            getDirections(CENTER, NOLJAKKA)
+
+            // var s="62.54937530333"
+            // var w="29.629089269057"
+            // var n="62.669887773615"
+            // var e="29.869758519545"
+
+            // var param = {
+            //     request_type: "get_forest",
+            //     s:62.54937530333,
+            //     w:29.629089269057,
+            //     n:62.669887773615,
+            //     e:29.869758519545,
+            // }
+            // var data = "param="+JSON.stringify(param)
+            // httpPostAsync(CONTEXT_SERVER, data, function(response){
+            //     console.log(response)
+            //     var forests = JSON.parse(response)
+            //     drawForests(forests)
+            // })
+            // context server가 작동하지 않는 것으로 보임...
+
+        }
+
+        function drawForests(forests) {
+            for (var i=0; i<forests.length; i++) {
+                var forest=new google.map.Polygon({
+                    map: map,
+                    paths: forests[i]
+                })
+            }
+        }
+
+        function addMarker(location, labelText="Z"){
+            var marker = new google.maps.Marker({
+                map: map,
+                position: location,
+                draggable: true,
+                // icon: image
+                label: {
+                    text: labelText,
+                    color: 'black',
+                    fontSize: "40px"
+                },
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: 'white',
+                    fillOpacity: 0.8,
+                    scale: 25,
+                    // scale: 10,
+                    strokeColor: 'black',
+                    strokeWeight: 14, 
+                    // strokeWeight: 5 
+                },
+            }); 
+            marker.addListener('dragend', onMarkerDrag) // 문제 해결되었으니 그냥 이것도 drag를 써도 되는거 아니?
+            marker.addListener('click', onMarkerClick)
+            
+            // return marker
+            markers.push(marker)
+
+            updateMarkerLabels()
+            getAllDirections()
+        }
+
+        function updateMarkerLabels(){
+            for (var i = 0; i < markers.length; i++) {
+                var lab=markers[i].getLabel()
+                // console.log(markers[i])
+                // lab.text = "A"+i
+                lab.text = LETTERS[i]
+                markers[i].setLabel(lab)
+            }
+        }
+
+        // function onMarkerDrag(event) {
+        //     var pointA = {
+        //         lat: markers[0].getPosition().lat(),
+        //         lng: markers[0].getPosition().lng()
+        //     }
+
+        //     var pointB = {
+        //         lat: markers[1].getPosition().lat(),
+        //         lng: markers[1].getPosition().lng()
+        //     }
+		// 	// if(markers.length>=2){
+		// 	// 	getAllDirections();
+		// 	// }
+        //     getDirections(pointA, pointB)
+        // }
+
+        function onMarkerDrag(event) {
+            getAllDirections()
+        }
+
+        function onMarkerClick(event) {
+            for (var i=0; i < markers.length; i++) {
+                if (markers[i].getPosition() == event.latLng) {
+                    markers[i].setMap(null)
+                    markers.splice(i, 1)
+                }
+            }
+            updateMarkerLabels()
+            getAllDirections()
+        }
+
+        function getAllDirections() {
+            for (var i=0; i< polylines.length; i++) {
+                polylines[i].setMap(null)
+            }
+            polylines=[]
+
+            for (var i = 0; i < markers.length-1; i++) {
+                var pointA = {
+                    lat: markers[i].getPosition().lat(),
+                    lng: markers[i].getPosition().lng()
+                }
+                var pointB = {
+                    lat: markers[i+1].getPosition().lat(),
+                    lng: markers[i+1].getPosition().lng()
+                }
+                getDirections(pointA, pointB)
+            }
+        }
+
+        function getDirections(pointA, pointB) {
+            var param={
+                request_type: "get_directions",
+                start_lat: pointA.lat,
+                start_lng: pointA.lng,
+                end_lat: pointB.lat,
+                end_lng: pointB.lng,
+                decode_geometry: true, // 좌표들을 보여줌!
+                // method: "osm_c" // others are "osm_w", "osm_d"
+                method: "osm_w"
+            }
+            var url = MOPSI_SERVER+"?param="+JSON.stringify(param)
+            httpGetAsync(url, onDirectionsReceived)
+        }
+
+        function onDirectionsReceived(result) {
+            // console.log(result)
+            // console.log(result.substring(0, result.length-3)) 
+            // 이게 무슨 일인지 모르겠는데 응답 끝에 foo가 붙는다...
+            // 아마 api 서버를 사용하지 못하도록 한 듯...
+            var obj=JSON.parse(result.substring(0, result.length-3))
+            obj=JSON.parse(obj); // TODO fix on Mopsi Server
+            // console.log(obj)
+            var coords = obj.routes[0].geometry.coordinates
+            // console.log(coords)
+
+            var polylinePath=[]
+            for (var i=0; i<coords.length; i++) {
+                polylinePath.push({
+                                lat: coords[i][1], 
+                                lng: coords[i][0]
+                                });
+            }
+
+            // create a new polyline
+            var polyline = new google.maps.Polyline({
+                path: polylinePath,
+                strokeColor: "#0000FF",
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                map: map,
+            });
+
+
+            polylines.push(polyline);
+        }
+        
+        function degToRad(deg) {
+            return deg * Math.PI/180
+        }
+
+        function getWeatherInCity(city) {
+            var key=WEATHER_KEY
+            var request=WEATHER_SERVER+"?q="+city+"&appid="+key
+            httpGetAsync(request, onGetWeather)
+        }
+
+        function getWeatherAtLocation(location) {
+            var key=WEATHER_KEY
+            var request=WEATHER_SERVER+"?lat="+location.lat+"&lon="+location.lng+"&appid="+key
+            httpGetAsync(request, onGetWeather)
+        }
+
+        function onGetWeather(stringOutput) {
+            var obj=JSON.parse(stringOutput)
+            console.log(obj)
+            WIND=obj.wind
+        }
+
+        // function httpGetAsync(url, callback) {
+        //     var request = new XMLHttpRequest()
+        //     request.onreadystatechange = function() {
+        //         if (request.readyState == 4 && request.status == 200) {
+        //             callback(request.responseText)
+        //         }
+        //     }
+        //     request.open("GET", url, true)
+        //     request.send(null)
+        // }
+    </script>
+    
+</head>
+<body>
+<!-- <body onload="main()"> -->
+    <!-- 멍청하게 body에 init()을 시켰는데... script에서 callback으로 init()을 작동하니 두번 작동되는 거지... -->
+    <div id="map"></div>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=[GOOGLE_KEY]]&callback=initMap">
+    </script>
+</body>
+</html>
