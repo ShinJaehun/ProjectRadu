@@ -1,0 +1,56 @@
+
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+	
+    <title>Super Tracker</title>
+	
+	<script src="js/main.js"></script>
+	<script src="js/measurement.js"></script>
+	<script src="js/locationHandler.js"></script>
+	<script src="js/controls.js"></script>
+	<script src="js/cookies.js"></script>
+	<!-- <script src="js/superMarker.js"></script>
+	<script src="js/httpHandler.js"></script> -->
+	<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=[GOOGLE_KEY]&callback=main">
+    </script>
+	
+    <link rel="stylesheet" href="css/main.css"></link>
+  </head>
+  
+  <body>
+  
+    <div id="map"></div>
+
+	<div id="controls">
+	
+		<div id="startTrackingControls">
+			<button class="btn" onclick="startTracking()">Start</button>
+			<button class="btn" onclick="viewCollection()">Coll.</button>
+		</div>
+		
+		<div id="stopTrackingControls">
+			<button class="btn" onclick="stopTracking()">Stop</button>
+		</div>
+
+		<div id="publishControls">
+			<button class="btn" onclick="saveTracking()">Save</button>
+			<button class="btn" onclick="deleteTracking()">Delete</button>
+		</div>
+		
+		<div id="collectionControls">
+			<button style="position:fixed;top:10%;left:10%;"class="btn" onclick="initControls()">
+				Back
+			</button>
+		
+			<button class="btn" onclick="moveCollectionLeft()">Left</button>
+			<span id="routeIndex" style="font-size:8vw;">0</span>
+			<button class="btn" onclick="moveCollectionRight()">Right</button>
+		</div>
+	</div>
+
+
+  </body>
+</html>
