@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+ 
+<canvas id="myCanvas"
+style="background: darkseagreen;"
+width="500"
+height="300"></canvas>
+
+<script>
+const emojis=["🐡", "🐟", "🐠"]
+const ctx=myCanvas.getContext('2d')
+const margin=100
+
+class Fish{
+    constructor(img){
+        this.img = img
+        this.x = Math.random()*myCanvas.width
+        this.y = Math.random()*myCanvas.height
+
+        this.size = Math.random()*20+10
+
+        const dir = Math.sign(Math.random()-0.5)
+        this.speed = this.size * dir * 0.02
+    }
+
+    update(ctx) {
+        // this.x+=1
+        // ctx.fillText(this.img, this.x, this.y)
+
+        // this.x+=1
+        // ctx.save()
+        // ctx.translate(this.x, this.y)
+        // ctx.scale(-1,1)
+        // ctx.fillText(this.img, 0, 0)
+        // ctx.restore()
+
+        this.x+=this.speed
+
+        if (this.x > myCanvas.width + margin) {
+            this.x = 0
+        }
+        if (this.x < 0 - margin) {
+            this.x = myCanvas.width
+        }
+
+        ctx.save()
+        ctx.translate(this.x, this.y)
+        if(this.speed > 0) {
+            ctx.scale(-1,1)
+        }
+        ctx.font= this.size + "px Arial"
+        ctx.fillText(this.img, 0, 0)
+        ctx.restore()
+    }
+}
+
+let fishes = new Array()
+for(let i=1; i<=50;i++) {
+    fishes.push(new Fish(emojis[i%emojis.length]))
+    // console.log(i%emojis.length)
+}
+
+fishes.sort((a, b) => a.size - b.size) // 이렇게 sort함으로서 큰 물고기들이 앞에서 보이는 효과를 기대할 수 있다?
+
+animate()
+
+function animate(){
+    ctx.clearRect(0,0,myCanvas.width, myCanvas.height)
+    fishes.forEach(fish => {
+        fish.update(ctx)
+    })
+    requestAnimationFrame(animate)
+}
+</script>
+   
+</body>
+</html>
+
