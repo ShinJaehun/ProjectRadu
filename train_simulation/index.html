@@ -1,0 +1,131 @@
+<html>
+   <head>
+      <title>Train Simulation v2</title>
+      <style>
+         body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+         }
+         #myCanvas {
+            background-color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+         }
+      </style>
+   </head>
+   <body>
+      <canvas id="myCanvas"></canvas>
+      <script src="smokeParticle.js"></script>
+      <script src="tree.js"></script>
+      <script src="train.js"></script>
+      <script src="track.js"></script>
+      <script src="utils.js"></script>
+      <script>
+         myCanvas.width = 1230;
+         myCanvas.height = 520;
+
+         const ctx = myCanvas.getContext("2d");
+
+         const cilinderFill = "#111";
+         const cilinderOutline = "#333";
+         const cabinFill = "#222";
+         const cabinOutline = "#555";
+         const wheelFill = "#640";
+         const wheelOutline = "#860";
+         const carFill = "#005";
+         const carOutline = "#008";
+         const connectorColor = "#A00";
+
+         const invSpeed = 5000;
+
+         const trackLeft = {
+            x: 0,
+            y: myCanvas.height * 0.9,
+         };
+         const trackRight = {
+            x: myCanvas.width,
+            y: myCanvas.height * 0.6,
+         };
+
+         const trackThickness = myCanvas.height * 0.1;
+
+         const trackAngle =
+            Math.atan2(trackRight.x - trackLeft.x, trackRight.y - trackLeft.y) -
+            Math.PI / 3;
+
+         // locomotive
+
+         const cilinderSize = trackThickness * 1.5;
+         const front = vLerp(trackLeft, trackRight, 0.18);
+         const mid = vLerp(trackLeft, trackRight, 0.3);
+         const back = vLerp(trackLeft, trackRight, 0.42);
+
+         const vOffsetCabin = cilinderSize * 0.6;
+         front.y -= vOffsetCabin;
+         mid.y -= vOffsetCabin;
+         back.y -= vOffsetCabin;
+
+         const trees = [];
+
+         const smokeXY={
+            x:240,
+            y:280
+         }
+         const smoke=[];
+
+         function animate() {
+            ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
+            while (trees.length < 20) {
+               const x = Math.random() * myCanvas.width;
+               const maxY =
+                  0.7 * vLerp(trackLeft, trackRight, x / myCanvas.width).y;
+               const y = (0.2 + Math.random()) * maxY;
+               trees.push(new Tree(x, y));
+            }
+
+            ctx.lineCap = "square";
+            ctx.lineJoin = "square";
+            for (const t of trees) {
+               if (t.x > myCanvas.width + 100 + Math.random() * 10) {
+                  t.x = -100;
+                  const maxY =
+                     0.7 * vLerp(trackLeft, trackRight, t.x / myCanvas.width).y;
+                  t.y = (0.2 + Math.random()) * maxY;
+                  t.reset();
+               }
+
+               t.update();
+               t.draw(ctx);
+            }
+
+            const grd=ctx.createLinearGradient(0,0,100,myCanvas.height);
+            grd.addColorStop(0,"rgba(255,255,255,1)");
+            grd.addColorStop(1,"rgba(255,255,255,0)");
+            ctx.fillStyle=grd;
+            ctx.fillRect(0,0,myCanvas.width,myCanvas.height);
+
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            drawTrack();
+            drawTrain();
+
+            smoke.push(new SmokeParticle(smokeXY.x,smokeXY.y));
+            for(let i=smoke.length-1;i>=0;i--){
+               const s=smoke[i];
+               s.update();
+               s.draw(ctx);
+               if(s.x>myCanvas.width+100){
+                  smoke.splice(i,1);
+               }
+            }
+            requestAnimationFrame(animate);
+         }
+
+         animate();
+      </script>
+   </body>
+</html>
