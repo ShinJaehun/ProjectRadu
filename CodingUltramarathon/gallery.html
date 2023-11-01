@@ -7,6 +7,7 @@
     <script src="js/Project.js"></script>
     <script src="js/StarryNight.js"></script>
     <script src="js/Constellation.js"></script>
+    <script src="js/ShootingStars.js"></script>
 
     <style>
         body {
@@ -27,6 +28,7 @@
 
         const projects = [
             null, // index 0
+            ShootingStars,
             Constellation,
             StarryNight
         ]
@@ -38,6 +40,7 @@
                 new projects[i](document.getElementById("canvas_"+i))
             }
         }
+        
         function initializeCanvases(){
             for (let i=1; i<=projectCount; i++) {
                 
