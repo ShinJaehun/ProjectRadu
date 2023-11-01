@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coding Ultramarathon</title>
+    <script src="js/Project.js"></script>
     <script src="js/StarryNight.js"></script>
     <script src="js/Constellation.js"></script>
 
@@ -24,11 +25,18 @@
         const CANVAS_SIZE=1000;
         const projectCount=99;
 
+        const projects = [
+            null, // index 0
+            Constellation,
+            StarryNight
+        ]
+
         function main() {
             initializeCanvases()
 
-            new Constellation(document.getElementById("canvas_1"))
-            new StarryNight(document.getElementById("canvas_2"))
+            for (let i=1; i<projects.length; i++){
+                new projects[i](document.getElementById("canvas_"+i))
+            }
         }
         function initializeCanvases(){
             for (let i=1; i<=projectCount; i++) {
