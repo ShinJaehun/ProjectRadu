@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Ultramarathon</title>
+    <script src="js/StarryNight.js"></script>
+    <style>
+        body {
+            background: black;
+            text-align: center;
+        }
+
+        canvas {
+            background: white;
+            margin: 1vh;
+            width: 80vh;
+            height: 80vh;
+        }
+    </style>
+    <script>
+        const CANVAS_SIZE=1000;
+        const projectCount=99;
+
+        function main() {
+            initializeCanvases()
+            new StarryNight(document.getElementById("canvas_1"))
+        }
+        function initializeCanvases(){
+            for (let i=1; i<=projectCount; i++) {
+                
+                const canvas = document.createElement('canvas');
+
+                canvas.id = "canvas_"+i;
+                canvas.width = CANVAS_SIZE;
+                canvas.height = CANVAS_SIZE;
+
+                var body = document.getElementsByTagName("body")[0];
+                body.appendChild(canvas);
+            }
+        }
+    </script>
+</head>
+<body onload="main()">
+    
+</body>
+</html>
