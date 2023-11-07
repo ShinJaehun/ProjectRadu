@@ -70,3 +70,32 @@ function drawColoredBackground(ctx, color) {
     ctx.fillStyle=color;
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
 }
+
+// A will go over B
+function addToCanvas(ctxA, ctxB) {
+    const imgDataA = ctxA.getImageData(0,0,CANVAS_SIZE,CANVAS_SIZE)
+    const imgDataB = ctxB.getImageData(0,0,CANVAS_SIZE,CANVAS_SIZE)
+
+    //[1r,1g,1b,1a,2r,2g,2b,2a,...] Size: 4*CANVAS_SIZE^2
+    for(let y=0; y<=CANVAS_SIZE; y++) {
+    	for(let x=0; x<=CANVAS_SIZE; x++) {
+    		let index=(y*CANVAS_SIZE+x%CANVAS_SIZE)*4;
+    		// let r=imgData.data[index]
+    		// let g=imgData.data[index+1]
+    		// let b=imgData.data[index+2]
+    		let a=imgDataA.data[index+3]
+    		
+            // if (r == 255 && g == 255 && b == 255) {
+    		if (a>0){
+                // imgData.data[index] = 0
+    			// imgData.data[index+1] = 255
+    			// imgData.data[index+2] = 0
+                imgDataB.data[index] = imgDataA.data[index]
+    			imgDataB.data[index+1] = imgDataA.data[index+1] 
+    			imgDataB.data[index+2] = imgDataA.data[index+2]
+    		}
+    	}
+    }
+
+    ctxB.putImageData(imgDataB,0,0)
+}

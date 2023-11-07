@@ -10,9 +10,11 @@ class Lightning extends Project{
 		drawColoredBackground(this.ctx,"rgb(0,0,100)");
 		// this.drawTree(location, len, angle, branchWidth)		
 		this.drawTree(
-			[CANVAS_SIZE/2,CANVAS_SIZE*0.9],
+			[
+				CANVAS_SIZE/2+Math.random()*CANVAS_SIZE*0.02,CANVAS_SIZE*0.1+Math.random()*CANVAS_SIZE*0.02
+			],
 			200,
-			0,
+			(Math.random()-0.5)*0.1,
 			8)
 	}
 	
@@ -25,24 +27,31 @@ class Lightning extends Project{
 		this.ctx.translate(...location) // canvas 이동
 		this.ctx.rotate(angle)
 		this.ctx.moveTo(0, 0) // canvas를 이동했기 때문에 항상 0,0부터 시작해도 연결이 된다!
-		this.ctx.lineTo(0, -len)
+		this.ctx.lineTo(0, +len)
 		this.ctx.stroke()
 
-		if (len<5) {
+		if (len<25) {
 			this.ctx.restore()
 			return
 		}
 
-		this.drawTree(
-			[0, -len],
-			len*0.75,
-			angle+0.1,
-			branchWidth*0.8)		
-		this.drawTree(
-			[0, -len],
-			len*0.75,
-			angle-0.1,
-			branchWidth*0.8)	
+		if (Math.random() < 0.8) {
+			let rand=(Math.random()-0.5)*0.5
+			this.drawTree(
+				[0, +len],
+				len*0.75,
+				rand,
+				branchWidth*0.8)		
+		}
+
+		if (Math.random() < 0.2) {
+			let rand=(Math.random()-0.5)*0.5
+			this.drawTree(
+				[0, +len],
+				len*0.75,
+				rand,
+				branchWidth*0.8)	
+		}
 			
 		this.ctx.restore()
 
