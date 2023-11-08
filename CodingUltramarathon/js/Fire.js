@@ -3,14 +3,17 @@ class Fire extends Project {
         super(canvas)
 
         this.fire=[];
-
+        this.path=[[CANVAS_SIZE*0.5, CANVAS_SIZE*0.5]];
         this.drawFrame();
         this.showDisabled();
     }
 
     drawFrame(){
-
-        this.fire.push(new Flame([CANVAS_SIZE*0.5, CANVAS_SIZE*0.5]))
+        // this.fire.push(new Flame(this.path))
+        for(let i=0; i < this.path.length; i++) {
+            this.fire.push(new Flame(this.path[i]))
+        }
+        
         drawDarkBackground(this.ctx);
         this.ctx.globalCompositeOperation = "lighter";
 
@@ -31,8 +34,10 @@ class Fire extends Project {
 
 class Flame {
     constructor(location){
-        this.location=location;
-        this.radius=20;
+        this.location=copyArr(location);
+        // this.radius=20;
+        this.radius=50;
+
         this.speed=Math.random()*4+4;
         this.step=0
         this.lifespan=20;

@@ -65,6 +65,10 @@ function drawDarkBackground(ctx) {
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
 }
 
+function clearBackground(ctx) {
+    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+}
+
 function drawColoredBackground(ctx, color) {
     ctx.beginPath();
     ctx.fillStyle=color;
@@ -98,4 +102,12 @@ function addToCanvas(ctxA, ctxB) {
     }
 
     ctxB.putImageData(imgDataB,0,0)
+}
+
+function copyArr(arr) {
+    let newArr=[]
+    for (let i=0; i< arr.length; i++) {
+        newArr[i]=arr[i]
+    }
+    return newArr
 }

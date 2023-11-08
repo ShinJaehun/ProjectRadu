@@ -1,4 +1,4 @@
-class WhiteForest extends Project{
+class GloomyForest extends Project{
 	constructor(canvas){
 		super(canvas);
 
@@ -11,18 +11,24 @@ class WhiteForest extends Project{
 
 		// drawColoredBackground(this.tmpCtx,"rgb(40,40,40)");
 
-		this.snowfallCanvas = document.createElement('canvas');
-		this.snowfallCanvas.width = CANVAS_SIZE;
-		this.snowfallCanvas.height = CANVAS_SIZE;
-		this.snowfall = new SnowFall(this.snowfallCanvas);
-		this.snowfallCtx = this.snowfallCanvas.getContext("2d")
+		this.rainCanvas = document.createElement('canvas');
+		this.rainCanvas.width = CANVAS_SIZE;
+		this.rainCanvas.height = CANVAS_SIZE;
+		this.rain = new Rain(this.rainCanvas);
+		this.rainCtx = this.rainCanvas.getContext("2d")
 
+		let yLocation = CANVAS_SIZE*0.9
 		for(let i=0; i<this.treeCount; i++){
 			let loc=
 			[
 				CANVAS_SIZE*Math.random(),
-				CANVAS_SIZE*0.9+CANVAS_SIZE*0.1*Math.random()
+				yLocation
 			]
+			yLocation+=CANVAS_SIZE*0.004*Math.random()
+
+			let val=(CANVAS_SIZE-loc[1])/2
+			this.tmpCtx.strokeStyle="rgb("+val+","+val+","+val+")"
+
 			this.drawTree(this.tmpCtx, loc,(200-(CANVAS_SIZE-loc[1])),0,9)
 		}
 
@@ -31,20 +37,23 @@ class WhiteForest extends Project{
 	}
 	
 	drawFrame(){
-		drawColoredBackground(this.ctx,"rgb(30,170,240)");
-		this.snowfall.drawFrame()
-		addToCanvas(this.snowfallCtx, this.ctx)
+		drawColoredBackground(this.ctx,"rgb(50,50,50)");
+		this.rain.drawFrame()
 		
-		this.ctx.fillStyle="lightgray"
-		this.ctx.fillRect(0, CANVAS_SIZE*0.65, CANVAS_SIZE, CANVAS_SIZE*0.5)
+		addToCanvas(this.rainCtx, this.ctx)
 
+		this.ctx.fillStyle="rgb(50,50,50)"
+		this.ctx.fillRect(0, CANVAS_SIZE*0.65, CANVAS_SIZE, CANVAS_SIZE*0.5)
 		addToCanvas(this.tmpCtx, this.ctx)
+
+
+
 	}
 	
 	drawTree(ctx, location, len, angle, branchWidth){
 		ctx.beginPath()
 		ctx.save()
-		ctx.strokeStyle="white"
+
 		ctx.lineWidth=branchWidth
 		ctx.translate(...location)
 		ctx.rotate(angle)

@@ -2,6 +2,7 @@ class SnowFall extends Project {
     constructor(canvas) {
         super(canvas)
 
+        canvas.style.backgroundColor="black"
         this.snow=this.generateSnowParticles(200);
 
         this.drawFrame();
@@ -9,7 +10,8 @@ class SnowFall extends Project {
     }
 
     drawFrame(){
-        drawDarkBackground(this.ctx);
+        // drawDarkBackground(this.ctx);
+        clearBackground(this.ctx)
 
         for(let i=0; i<this.snow.length;i++){
             this.snow[i].update();

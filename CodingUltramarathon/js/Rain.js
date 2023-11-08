@@ -9,7 +9,7 @@ class Rain extends Project {
     }
 
     drawFrame(){
-        drawDarkBackground(this.ctx);
+        clearBackground(this.ctx);
 
         for(let i=0; i<this.raindrops.length;i++){
             this.raindrops[i].update();
@@ -41,7 +41,7 @@ class RainDrop {
     draw(ctx){
         ctx.beginPath();
         ctx.lineWidth=this.radius;
-        ctx.strokeStyle="rgba(255,255,255,0.3)";
+        ctx.strokeStyle="rgba(100,100,100,0.3)";
         ctx.moveTo(...this.oldLocation);
         ctx.lineTo(...this.location);
         ctx.stroke();
