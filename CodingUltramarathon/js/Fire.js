@@ -1,17 +1,31 @@
 class Fire extends Project {
-    constructor(canvas) {
+    constructor(canvas, size, upSideDown) {
         super(canvas)
 
         this.fire=[];
         this.path=[[CANVAS_SIZE*0.5, CANVAS_SIZE*0.5]];
-        this.drawFrame();
+
+        this.size=50
+        if(size!=null){
+            this.size=size
+        }
+
+        this.upSideDown=false
+        if(upSideDown!=null){
+            this.upSideDown=upSideDown
+        }
+
+        if(upSideDown==null){
+			this.drawFrame();
+		}
+
         this.showDisabled();
     }
 
     drawFrame(){
         // this.fire.push(new Flame(this.path))
         for(let i=0; i < this.path.length; i++) {
-            this.fire.push(new Flame(this.path[i]))
+            this.fire.push(new Flame(this.path[i], this.size))
         }
         
         drawDarkBackground(this.ctx);
@@ -22,22 +36,20 @@ class Fire extends Project {
                 this.fire.splice(i,1);// remove 1 item
                 i--; //이거 실수 할 수 있는거!!!
             } else {
-                this.fire[i].update();
+                this.fire[i].update(this.upSideDown);
                 this.fire[i].draw(this.ctx);
             }
 
         }
         this.ctx.globalCompositeOperation = "source-over";
-
     }
 }
 
 class Flame {
-    constructor(location){
+    constructor(location, size){
         this.location=copyArr(location);
         // this.radius=20;
-        this.radius=50;
-
+        this.radius=size;
         this.speed=Math.random()*4+4;
         this.step=0
         this.lifespan=20;
@@ -67,10 +79,15 @@ class Flame {
         ctx.arc(this.location[0], this.location[1], this.radius, 0, Math.PI*2);
         ctx.fill();
     }
-    update(){
+    update(upSideDown){
         this.step++;
         this.radius-=1;
-        this.location[1]-=this.speed;
+
+        if(upSideDown){
+            this.location[1]+=this.speed
+        } else {
+            this.location[1]-=this.speed;
+        }
         this.location[0]-=(Math.random()-0.5)*4;
 
     }

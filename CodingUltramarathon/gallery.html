@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coding Ultramarathon</title>
     <script src="js/Project.js"></script>
+    <script src="js/Ignition.js"></script>
+    <script src="js/SpaceFlight.js"></script>
+
+    <script src="js/SpaceShip.js"></script>
+    <script src="js/Whiteboard.js"></script>
+    <script src="js/EngineNoise.js"></script>
+    <script src="js/ExtendedPiano.js"></script>
+    <script src="js/LaserSound.js"></script>
+    <script src="js/Song.js"></script>
+    <script src="js/Buttons.js"></script>
+    <script src="js/Piano.js"></script>
+    <script src="js/MusicalNote.js"></script>
+    <script src="js/Sound.js"></script>
     <script src="js/GloomyForest.js"></script>
     <script src="js/BurningForest.js"></script>
     <script src="js/WhiteForest.js"></script>
@@ -43,8 +56,25 @@
         const CANVAS_SIZE=1000;
         const projectCount=99;
 
+        // const AUDIO_CONTEXT=new(AudioContext||webkitAudioContext)
+        // 사실 이렇게 해도 정상 동작함!
+        let AUDIO_CONTEXT
+        let VIDEO;
+
         const projects = [
             null, // index 0
+            Ignition,
+            SpaceFlight,
+            SpaceShip,
+            Whiteboard,
+            EngineNoise,
+            ExtendedPiano,
+            LaserSound,
+            Song,
+            Buttons,
+            Piano,
+            MusicalNote,
+            Sound,
             GloomyForest,
             BurningForest,
             WhiteForest,
@@ -69,6 +99,7 @@
 
         function main() {
             initializeCanvases()
+            AUDIO_CONTEXT=new(AudioContext||webkitAudioContext)
 
             for (let i=1; i<projects.length; i++){
                 new projects[i](document.getElementById("canvas_"+i))

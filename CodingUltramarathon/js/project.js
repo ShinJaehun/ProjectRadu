@@ -43,10 +43,43 @@ class Project {
             }
         }, false)
 
+        this.canvas.addEventListener('mousemove', function(event){
+            const location = getMousePos(me.canvas, event)
+            me.move(location)
+        }, false)
+
+        
+        this.canvas.addEventListener('mousedown', function(event){
+            const location = getMousePos(me.canvas, event)
+            me.down(location)
+        }, false)
+
+        this.canvas.addEventListener('mouseup', function(event){
+            const location = getMousePos(me.canvas, event)
+            me.up(location)
+        }, false)
+
         this.canvas.addEventListener('click', function(event){
             const location = getMousePos(me.canvas, event)
-            console.log(location)
+            // console.log(location)
+            me.click(location)
         }, false)
+    }
+
+    click(location){
+
+    }
+
+    move(location){
+
+    }
+    
+    down(location){
+
+    }
+    
+    up(location){
+
     }
 }
 
@@ -110,4 +143,22 @@ function copyArr(arr) {
         newArr[i]=arr[i]
     }
     return newArr
+}
+
+function average(arr) { // 이게 Buttons, Piano에서 쓰이는데 정확히 어떤 원리인지는 모르겠음!
+    let vector=[]
+    for (let i=0; i<arr[0].length; i++) {
+        vector[i]=0
+    }
+
+    for (let i=0; i<arr.length; i++) {
+        for (let j=0; j<arr[i].length; j++) {
+            vector[j]+=arr[i][j]
+        }
+    }
+
+    for (let i=0; i<vector.length; i++) {
+        vector[i]/=arr.length
+    }
+    return vector
 }
