@@ -145,6 +145,15 @@ function copyArr(arr) {
     return newArr
 }
 
+function add(v1, v2){
+    // vector add
+    let newV = []
+    for (let i=0; i<v1.length; i++){
+        newV[i]=v1[i]+v2[i]
+    }
+    return newV
+}
+
 function average(arr) { // 이게 Buttons, Piano에서 쓰이는데 정확히 어떤 원리인지는 모르겠음!
     let vector=[]
     for (let i=0; i<arr[0].length; i++) {
