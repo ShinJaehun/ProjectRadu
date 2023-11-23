@@ -51,7 +51,7 @@ function drawFlappyBat(ctx, location, scaler, angle, amount){
     scaleArr(points, scaler)
     scaleArr(wPoints, scaler)
 
-    ctx.fillStyle="rgb(100,0,100)"
+    ctx.fillStyle="rgb(130,0,130)"
     
     ctx.beginPath()
     ctx.arc(...points[0], 0.13*scaler, 0, Math.PI*2)
@@ -61,7 +61,7 @@ function drawFlappyBat(ctx, location, scaler, angle, amount){
     ctx.arc(...points[1], 0.08*scaler, 0, Math.PI*2)
     ctx.fill()
 
-    ctx.fillStyle="rgb(60,0,100)"
+    ctx.fillStyle="rgb(90,0,130)"
 
     ctx.beginPath()
     ctx.moveTo(...wPoints[0])

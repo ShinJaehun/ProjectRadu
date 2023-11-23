@@ -5,7 +5,7 @@ class Fire extends Project {
         this.fire=[];
         this.path=[[CANVAS_SIZE*0.5, CANVAS_SIZE*0.5]];
 
-        this.size=50
+        this.size=80
         if(size!=null){
             this.size=size
         }
