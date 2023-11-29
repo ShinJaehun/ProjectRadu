@@ -44,7 +44,7 @@ class FlappyBatB extends Project {
             this.ctx.textAlign ="center"
             this.ctx.textBaseline ="middle"
 
-            let remainingTime=4-Math.floor(
+            let remainingTime=5-Math.floor(
                 (new Date().getTime()-this.endTime)/1000)
             if(remainingTime<0){
                 remainingTime=0
