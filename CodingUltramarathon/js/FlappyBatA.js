@@ -105,8 +105,11 @@ function getPillerPath(location, radius) {
 
 function distance(v1, v2){
     let dist=0
+    // console.log(v1.length)
     for(let i=0; i<v1.length; i++){
         dist+=Math.pow(v1[i]-v2[i], 2)
     }
     return Math.sqrt(dist)
 }
+
+
