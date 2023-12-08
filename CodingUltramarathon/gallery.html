@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coding Ultramarathon</title>
     <script src="js/Project.js"></script>
+    <script src="js/Flag.js"></script>
+
+    <script src="js/RigidObjects.js"></script>
+
+    <script src="js/MultiPendulum.js"></script>
+
     <script src="js/Pendulum.js"></script>
     <script src="js/FakeBackground.js"></script>
     <script src="js/NoGreenScreen.js"></script>
@@ -87,6 +93,9 @@
 
         const projects = [
             null, // index 0
+            Flag,
+            RigidObjects,
+            MultiPendulum,
             Pendulum,
             FakeBackground,
             NoGreenScreen,
@@ -150,7 +159,7 @@
             initializeCanvases()
             AUDIO_CONTEXT=new(AudioContext||webkitAudioContext)
             
-            // initializeCamera()
+            initializeCamera()
 
             for (let i=1; i<projects.length; i++){
                 new projects[i](document.getElementById("canvas_"+i))
