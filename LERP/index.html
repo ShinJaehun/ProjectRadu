@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Interpolation</title>
+    <style>
+        body{
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+    <script>
+        myCanvas.width=window.innerWidth;
+        myCanvas.height=window.innerHeight;
+
+        const A={x:100,y:300};
+        const B={x:400,y:100};
+
+        const orange={r:230,g:150,b:0};
+        const blue={r:0,g:70,b:160};
+
+        const lowFreq=200;
+        const highFreq=600;
+
+        const ctx=myCanvas.getContext("2d")
+
+        let osc=null;
+        let audioCtx=null;
+        // myCanvas.onClick=function(){
+        //     console.log("hello")
+            // if(audioCtx==null){
+            //     audioCtx=new(
+            //         AudioContext || 
+            //         webkitAudioContext ||
+            //         window.webkitAudioContext)();
+            //     const osc=audioCtx.createOscillator();
+            //     osc.frequency.value=200;
+            //     osc.start();
+
+            //     const node=audioCtx.createGain();
+            //     node.gain.value=0.3;
+            //     osc.connect(node);
+            //     node.connect(audioCtx.destination);
+            // }
+        // } => 얘가 안 되는 이유를 모르겠음...
+
+        // myCanvas.addEventListener("click",function(){
+        //     console.log("hello")
+        //     if(audioCtx==null){
+        //         audioCtx=new(
+        //             AudioContext || 
+        //             webkitAudioContext ||
+        //             window.webkitAudioContext)();
+        //         const osc=audioCtx.createOscillator();
+        //         osc.frequency.value=200;
+        //         osc.start();
+
+        //         const node=audioCtx.createGain();
+        //         node.gain.value=0.3;
+        //         osc.connect(node);
+        //         node.connect(audioCtx.destination);
+        //     }
+        // })
+
+        myCanvas.addEventListener("click",function(){
+            console.log("hello")
+            if(audioCtx==null){
+                audioCtx=new(
+                    AudioContext || 
+                    webkitAudioContext ||
+                    window.webkitAudioContext)();
+                osc=audioCtx.createOscillator();
+                osc.frequency.value=200;
+                osc.start();
+
+                const node=audioCtx.createGain();
+                node.gain.value=0.1;
+                osc.connect(node);
+                node.connect(audioCtx.destination);
+            }
+        })
+
+        animate();
+
+        // const A={x:100,y:200};
+        // const B={x:400,y:200};
+
+        // drawDot(A,"A")
+        // drawDot(B,"B")
+
+        // const t=1/2;
+        // const t=0.1;
+
+        // const t=-0.2;
+        // const t=1.2;
+
+        // const C={
+        //     // x:(A.x+B.x)/2,
+        //     // x:(2*A.x+B.x)/3,
+        //     // x:A.x+(B.x-A.x)*1/3,
+        //     // x:A.x+(B.x-A.x)*Math.random(),
+        //     x:lerp(A.x,B.x,t),
+        //     y:200
+        // }
+        // drawDot(C,"C")
+
+        // const n=10;
+        // for(let i=0; i<=n-1; i++){
+        //     const t=i/(n-1)
+        //     const C={
+        //         x:lerp(A.x,B.x,t),
+        //         y:200
+        //     }
+        //     // drawDot(C,"C")
+        //     drawDot(C,"."+i)
+        // }
+
+        // drawDot(A,"A")
+        // drawDot(B,"B")
+
+        // const A={x:100,y:300};
+        // const B={x:400,y:100};
+
+        // const n=10;
+        // for(let i=0; i<=n-1; i++){
+        //     const t=i/(n-1)
+        //     // const C={
+        //     //     x:lerp(A.x,B.x,t),
+        //     //     y:lerp(A.y,B.y,t)
+        //     // }
+        //     const C=vLerp(A,B,t)
+        //     drawDot(C,"."+i)
+        // }
+
+        // drawDot(A,"A")
+        // drawDot(B,"B")
+
+        // function animate(){
+        //     ctx.clearRect(0,0,myCanvas.width,myCanvas.height)
+            
+        //     const sec=new Date().getTime()/1000;
+        //     // console.log(sec);
+        //     const t=sec-Math.floor(sec);
+        //     const C=vLerp(A,B,t);
+        //     drawDot(C,"");
+            
+        //     drawDot(A,"A")
+        //     drawDot(B,"B")
+
+        //     requestAnimationFrame(animate);
+        // }
+
+        // function animate(){
+        //     ctx.clearRect(0,0,myCanvas.width,myCanvas.height)
+            
+        //     const sec=new Date().getTime()/1000;
+        //     // const t=(Math.sin(sec)+1)/2;
+        //     const t=(Math.sin(sec*Math.PI)+1)/2;
+
+        //     const C=vLerp(A,B,t);
+        //     drawDot(C,"");
+            
+        //     drawDot(A,"A")
+        //     drawDot(B,"B")
+
+        //     requestAnimationFrame(animate);
+        // }
+
+        // function animate(){
+        //     ctx.clearRect(0,0,myCanvas.width,myCanvas.height)
+            
+        //     const sec=new Date().getTime()/1000;
+        //     // const t=(Math.sin(sec)+1)/2;
+        //     const t=(Math.sin(sec*Math.PI)+1)/2;
+
+        //     const C=vLerp(A,B,t);
+        //     drawDot(C,"");
+            
+        //     drawDot(A,"A")
+        //     drawDot(B,"B")
+
+        //     // const {r,g,b}=orange;
+        //     const {r,g,b}=vLerp(orange,blue,t);
+        //     myCanvas.style.backgroundColor=`rgb(${r},${g},${b})`;
+
+        //     requestAnimationFrame(animate);
+        // }
+
+        // function animate(){
+        //     ctx.clearRect(0,0,myCanvas.width,myCanvas.height)
+            
+        //     const sec=new Date().getTime()/1000;
+        //     const t=(Math.sin(sec*Math.PI)+1)/2;
+
+        //     const C=vLerp(A,B,t);
+        //     drawDot(C,"");
+            
+        //     drawDot(A,"A")
+        //     drawDot(B,"B")
+
+        //     const {r,g,b}=vLerp(orange,blue,t);
+        //     myCanvas.style.backgroundColor=`rgb(${r},${g},${b})`;
+
+        //     if(osc){
+        //         osc.frequency.value=lerp(lowFreq,highFreq,t);
+        //     }
+
+        //     requestAnimationFrame(animate);
+        // }
+
+        function animate(){
+            ctx.clearRect(0,0,myCanvas.width,myCanvas.height)
+            
+            const sec=new Date().getTime()/1000;
+            const t=(Math.sin(sec*Math.PI)+1)/2;
+
+            const C=vLerp(A,B,t);
+            drawDot(C,"");
+            
+            drawDot(A,"A")
+            drawDot(B,"B")
+
+            const {r,g,b}=vLerp(orange,blue,t);
+            myCanvas.style.backgroundColor=`rgb(${r},${g},${b})`;
+
+            if(osc){
+                osc.frequency.value=lerp(lowFreq,highFreq,t);
+            }
+
+            ctx.strokeStyle="white";
+            ctx.textAlign="center";
+            ctx.textBaseline="top";
+            ctx.font="bold 40px Arial";
+            // ctx.setLineDash([3,3])
+            // ctx.setLineDash([3,100])
+            ctx.setLineDash([lerp(3,100,t),100])
+            ctx.strokeText("click for sound",myCanvas.width/2,10);
+            ctx.setLineDash([])
+            ctx.fillStyle="rgba(255,255,255,0.2)"
+            ctx.fillText("click for sound",myCanvas.width/2,10);
+
+            requestAnimationFrame(animate);
+        }
+
+        // function vLerp(A,B,t){
+        //     return {
+        //         x:lerp(A.x,B.x,t),
+        //         y:lerp(A.y,B.y,t)
+        //     }
+        // }
+
+        function vLerp(A,B,t){
+            const res={};
+            for(let attr in A){
+                res[attr]=lerp(A[attr],B[attr],t);
+            }
+            return res;
+        }
+
+        function lerp(a,b,t){
+            return a+(b-a)*t
+        }
+
+        function drawDot(pos,label){
+            ctx.beginPath();
+            ctx.fillStyle="white";
+            ctx.strokeStyle="black";
+            ctx.arc(pos.x,pos.y,10,0,Math.PI*2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle="black";
+            ctx.textAlign="center";
+            ctx.textBaseline="middle";
+            ctx.font="bold 14px Arial"
+            ctx.fillText(label,pos.x,pos.y);
+        }
+
+
+
+    </script>
+</body>
+</html>
